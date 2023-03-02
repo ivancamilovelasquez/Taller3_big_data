@@ -34,3 +34,9 @@ train_personas <- read.csv("data_ignore/test.csv")
 train_hogares <- read.csv("data_ignore/train.csv")
 
 
+
+
+
+
+
+

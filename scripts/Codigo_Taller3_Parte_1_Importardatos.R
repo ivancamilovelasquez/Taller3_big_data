@@ -120,7 +120,7 @@ data$casa <- ifelse(data$casa, 1, 0)
 
 
 
-
+agdfggsdgsdg
 
 
 

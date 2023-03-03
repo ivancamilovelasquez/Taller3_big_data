@@ -19,13 +19,14 @@ rm(list = ls())
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(tidyverse, ggplot2, openxlsx, scales, skimr, stringi, SnowballC)
+p_load(tidyverse, ggplot2, openxlsx, scales, skimr, stringi, SnowballC, stringr)
 
 
 # 1. Definir directorio 
 
 #Iván
-setwd("D:/2023/ANDES/Big data/Taller3")
+#setwd("D:/2023/ANDES/Big data/Taller3")
+setwd("C:/Users/Ivan/Documents/Documento 2023/Andes/Big data/Taller3_big_data")
 
 
 # 1.2 Importar datos 
@@ -59,17 +60,26 @@ skim(test)
 
 # 1.3 Completar informacion con expresiones regulares
 
-names(train)[c("title")] <- "titulo"
-names(test)[c("title")] <-  "titulo"
+colnames(train)[colnames(train) == "title"] <- "titulo"
+colnames(test)[colnames(test) == "title"] <- "titulo"
+
+
+
+
 
 objetos <- c("train", "test")
 for (obj in objetos) {
+  
+  
+data <- get(obj)    
 
+ 
 #Eliminar tildes 
-data$title_modificado <- stri_trans_general(str = data$title , 
-                                             id = "Latin-ASCII")
+data$title_modificado <- stri_trans_general(str = data$titulo , 
+                                              id = "Latin-ASCII")
+ 
 
-
+ 
 #Quitar comas, guiones y otros caracteres especiales o signos de puntuación
 data$title_modificado <- gsub('[^A-Za-z0-9 ]+', ' ', data$title_modificado)
 
@@ -116,11 +126,33 @@ data$casa <- grepl("\\bcasa\\b", data$title_modificado)
 data$casa <- ifelse(data$casa, 1, 0)
 
 
+
+
+assign(obj, data)
+rm(data)
+
 }
 
 
 
-agdfggsdgsdg
+
+train$numero_antes <- gsub("(\\d{1,3})m2", "<num>m2", train$description)
+
+
+
+
+train$numero_antes <- gsub("\\D*(\\b\\d{3}\\b(?=.*m2)|(?<=m2\\D*)\\d{3}\\b)\\D*", "\\1 ", train$description)
+
+train$numero_antes  <- str_extract_all(train$description, "(?<!\\d)(\\d{3})(?!\\d).*?m2.*?(?<!\\d)(\\d{3})(?!\\d)")
+
+
+train$numero_antes <- str_extract(train$description, "(?<=\\d\\s)\\d+(?= m2)")
+train$numero_antes <- gsub("(\\d+)\\s*m2", "\\1", train$description)
+
+
+patron <- "\\b\\d{1,3}\\b"
+
+train$numero_tres <- regmatches(train$titulo, gregexpr(patron, train$titulo))[[1]]
 
 
 

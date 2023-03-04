@@ -25,8 +25,8 @@ p_load(tidyverse, ggplot2, openxlsx, scales, skimr, stringi, SnowballC, stringr)
 # 1. Definir directorio 
 
 #Iván
-#setwd("D:/2023/ANDES/Big data/Taller3")
-setwd("C:/Users/Ivan/Documents/Documento 2023/Andes/Big data/Taller3_big_data")
+setwd("D:/2023/ANDES/Big data/Taller3")
+#setwd("C:/Users/Ivan/Documents/Documento 2023/Andes/Big data/Taller3_big_data")
 
 
 # 1.2 Importar datos 
@@ -64,9 +64,6 @@ colnames(train)[colnames(train) == "title"] <- "titulo"
 colnames(test)[colnames(test) == "title"] <- "titulo"
 
 
-
-
-
 objetos <- c("train", "test")
 for (obj in objetos) {
   
@@ -74,24 +71,24 @@ for (obj in objetos) {
 data <- get(obj)    
 
  
-#Eliminar tildes 
+#1.3.1 Eliminar tildes 
 data$title_modificado <- stri_trans_general(str = data$titulo , 
                                               id = "Latin-ASCII")
  
 
  
-#Quitar comas, guiones y otros caracteres especiales o signos de puntuación
+#1.3.2 Quitar comas, guiones y otros caracteres especiales o signos de puntuación
 data$title_modificado <- gsub('[^A-Za-z0-9 ]+', ' ', data$title_modificado)
 
 
-# Todo en minuscula
+#1.3.3 Todo en minuscula
 data$title_modificado <- tolower(data$title_modificado)
 
-# Un solo espacio
+#1.3.4 Un solo espacio
 data$title_modificado <- gsub('\\s+', ' ', data$title_modificado)
 
 
-# Variable casa y apartamento
+#1.3.5 Variable casa y apartamento
 
 data$apartamento_m <- grepl("\\bapartamento\\b", data$title_modificado)
 data$aparta_estudio <- grepl("\\bapartaestudio\\b", data$title_modificado)
@@ -120,48 +117,44 @@ data <- subset(data, select = -c(apartamento_m, aparta_estudio, apto,
                                    duplex,penthouse, pent,ph, ap, aparta))
 
 
-
-
 data$casa <- grepl("\\bcasa\\b", data$title_modificado)
 data$casa <- ifelse(data$casa, 1, 0)
 
 
+#1.3.6 Variable metros cuadrados
+
+#Expresiones regulares de metros cuadrados 
+data$numero_antes_m2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*m2)")
+data$numero_despues_m2 <- str_extract(data$description, "(?<=m2\\s)\\d{2,3}")
+data$numero_antes_metros <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*metros)")
+data$numero_despues_metros <- str_extract(data$description, "(?<=metros\\s)\\d{2,3}")
+data$numero_antes_mt <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*mt)")
+data$numero_despues_mt <- str_extract(data$description, "(?<=mt\\s)\\d{2,3}")
+data$numero_antes_mts <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*mts)")
+data$numero_despues_mts <- str_extract(data$description, "(?<=mts\\s)\\d{2,3}")
+data$numero_antes_mt2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*mt2)")
+data$numero_despues_mt2 <- str_extract(data$description, "(?<=mt2\\s)\\d{2,3}")
+data$numero_antes_mts2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*mts2)")
+data$numero_despues_mts2 <- str_extract(data$description, "(?<=mts2\\s)\\d{2,3}")
+data$numero_antes_metros_c2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*metros cuadrados)")
+data$numero_despues_metros_c2 <- str_extract(data$description, "(?<=metros cuadrados\\s)\\d{2,3}")
+
+
+data$maximo_metros <- pmax(data$numero_antes_m2, data$numero_despues_m2, data$numero_antes_metros, data$numero_despues_metros,
+                            data$numero_antes_mt, data$numero_despues_mt, data$numero_antes_mts , data$numero_despues_mts, 
+                            data$numero_antes_mt2, data$numero_despues_mt2, data$numero_antes_mts2, data$numero_despues_mts2, data$numero_antes_metros_c2,
+                            data$numero_despues_metros_c2, na.rm = TRUE)
+
+
+data <- subset(data, select = -c(numero_antes_m2,numero_despues_m2, numero_antes_metros, numero_despues_metros, 
+                                   numero_antes_mt, numero_despues_mt, numero_antes_mts, numero_despues_mts, numero_antes_mt2,
+                                   numero_despues_mt2, numero_antes_mts2, numero_despues_mts2, numero_antes_metros_c2,  numero_despues_metros_c2))
 
 
 assign(obj, data)
 rm(data)
 
 }
-
-
-
-
-train$numero_antes <- gsub("(\\d{1,3})m2", "<num>m2", train$description)
-
-
-
-
-train$numero_antes <- gsub("\\D*(\\b\\d{3}\\b(?=.*m2)|(?<=m2\\D*)\\d{3}\\b)\\D*", "\\1 ", train$description)
-
-train$numero_antes  <- str_extract_all(train$description, "(?<!\\d)(\\d{3})(?!\\d).*?m2.*?(?<!\\d)(\\d{3})(?!\\d)")
-
-
-train$numero_antes <- str_extract(train$description, "(?<=\\d\\s)\\d+(?= m2)")
-train$numero_antes <- gsub("(\\d+)\\s*m2", "\\1", train$description)
-
-
-patron <- "\\b\\d{1,3}\\b"
-
-train$numero_tres <- regmatches(train$titulo, gregexpr(patron, train$titulo))[[1]]
-
-
-
-
-
-
-
-
-
 
 
 

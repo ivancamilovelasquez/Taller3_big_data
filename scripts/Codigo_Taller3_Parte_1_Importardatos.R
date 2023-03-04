@@ -88,7 +88,7 @@ data$title_modificado <- tolower(data$title_modificado)
 data$title_modificado <- gsub('\\s+', ' ', data$title_modificado)
 
 
-#1.3.5 Variable casa y apartamento
+#1.3.5 crear las variables casa y apartamento
 
 data$apartamento_m <- grepl("\\bapartamento\\b", data$title_modificado)
 data$aparta_estudio <- grepl("\\bapartaestudio\\b", data$title_modificado)
@@ -121,7 +121,7 @@ data$casa <- grepl("\\bcasa\\b", data$title_modificado)
 data$casa <- ifelse(data$casa, 1, 0)
 
 
-#1.3.6 Variable metros cuadrados
+#1.3.6 crear la variable metros cuadrados
 
 #Expresiones regulares de metros cuadrados 
 data$numero_antes_m2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*m2)")
@@ -151,10 +151,38 @@ data <- subset(data, select = -c(numero_antes_m2,numero_despues_m2, numero_antes
                                    numero_despues_mt2, numero_antes_mts2, numero_despues_mts2, numero_antes_metros_c2,  numero_despues_metros_c2))
 
 
+#1.3.7 crear la variable número de garajes
+
+data$numero_antes_garaje <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*garaje)")
+data$numero_despues_garaje <- str_extract(data$description, "(?<=garaje\\s)\\d{2,3}")
+data$numero_antes_garajes <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*garajes)")
+data$numero_despues_garajes <- str_extract(data$description, "(?<=garajes\\s)\\d{2,3}")
+
+data$numero_garajes <- pmax(data$numero_antes_garaje, data$numero_despues_garaje, data$numero_antes_garajes, 
+                             data$numero_despues_garajes, na.rm = TRUE)
+
+
+data <- subset(data, select = -c(numero_antes_garaje, numero_despues_garaje, 
+                                   numero_antes_garajes, numero_despues_garajes))
+
+
+#1.3.8 crear las variables garaje, piscina, terraza, campestre
+
+data$garaje <- grepl("garaje", data$description)
+data$piscina <- grepl("piscina", data$description)
+data$terraza <- grepl("terraza", data$description)
+data$campestre <- grepl("campestre", data$description)
+
+
 assign(obj, data)
 rm(data)
 
 }
+
+
+
+
+
 
 
 

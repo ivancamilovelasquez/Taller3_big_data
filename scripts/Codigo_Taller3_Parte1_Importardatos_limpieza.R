@@ -1,7 +1,9 @@
 #_____________________________________________________________________________#
 #                                                                             #
 #                      Problem Set 3: Making Money with ML?                     #
-#                                                                             #
+# 
+#
+# Código para importar datos y limpiar los datos con expresiones regulares
 #_____________________________________________________________________________#
 
 #   Autores: - Jorge Rodríguez                                                  

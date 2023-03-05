@@ -60,16 +60,42 @@ leaflet() %>%
              opacity = 1)
 
 ## Nota: preguntar si year es el ano se creo el apartamento
-# Info externa 
+
+
+
+# 3.1 Info externa : parques 
 
 parques <- opq(bbox = getbb("Bogota Colombia")) %>%
   add_osm_feature(key = "leisure" , value = "park") 
+
+# graficar 
+
+centroides <- gCentroid(as(parques_geometria$geometry, "Spatial"), byid = T)
+
 parques_sf <- osmdata_sf(parques)
 parques_geometria <- parques_sf$osm_polygons %>% 
   select(osm_id, name)
 
 
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = parques_geometria, col = "green",
+              opacity = 0.8, popup = parques_geometria$name) %>% 
+addCircles(lng = centroides$x, 
+           lat = centroides$y, 
+           col = "red", opacity = 1, radius = 1)             
+              
+
 available_tags("leisure")
+
+
+
+# convertir data espacial 
+train_sf <- st_as_sf(train, coords = c("lon", "lat"))
+st_crs(train_sf) <- 4326
+centroides_sf <- st_as_sf(centroides, coords = c("x", "y"))
+
+dist_matrix <- st_distance(x = train_sf, y = centroides_sf)
 
 
 

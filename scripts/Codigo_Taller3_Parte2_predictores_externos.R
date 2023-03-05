@@ -17,7 +17,7 @@
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata)
+p_load(tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
 
 
 # 2.1 Definir colores
@@ -38,26 +38,60 @@ r_std <- (r - min(r))/(max(r) - min(r))
 max = 20
 min = 1
 r_scaled <- r_std * (max - min) + min
-html_popup <-  paste0("Año", train$year )
+html_popup <-  paste0("<b>Año: </b>", train$year,
+                      "<b>Area: </b>", train$area_maxima,
+                      "<b>Precio: </b>", scales::dollar(train$price))
+
+r_test <- test$year
+r_std_test <- (r_test - min(r_test))/(max(r_test) - min(r_test)) 
+r_scaled_test <- r_std_test * (max - min) + min
+html_popup_test <-  paste0("<b>Año: </b>", train$year,
+                           "<b>Area: </b>", train$area_maxim)
 
 
-# 2.3 Gráfica 1 
+
+# 2.3 Gráfica  : Train
 
 limites <- getbb("Bogota Colombia")
 filtro1 <- between(train$lon, limites[1, "min"], limites[1, "max"])
 filtro2 <- between(train$lat, limites[2, "min"], limites[2, "max"])
 filtro <- filtro1 & filtro2
 train <- train[filtro,] 
-# Observamos la primera visualización
-leaflet() %>%
+
+
+grfica_train <-  leaflet() %>%
+                  addTiles() %>%
+                  addCircles(lng = train$lon, 
+                  lat = train$lat,
+                  fillOpacity = 1,
+                  col = color,
+                  radius = r_scaled,
+                  popup = html_popup,
+                  opacity = 1)
+
+htmlwidgets::saveWidget(grfica_train, "views//train.html")
+
+
+# 2.4 Gráfica  : test
+
+limites <- getbb("Bogota Colombia")
+filtro1 <- between(test$lon, limites[1, "min"], limites[1, "max"])
+filtro2 <- between(test$lat, limites[2, "min"], limites[2, "max"])
+filtro <- filtro1 & filtro2
+train <- train[filtro,] 
+
+
+grfica_train <-  leaflet() %>%
   addTiles() %>%
   addCircles(lng = train$lon, 
              lat = train$lat,
              fillOpacity = 1,
              col = color,
-             radius = r_scaled,
-             popup = html_popup,
+             radius = r_scaled_test,
+             popup = html_popup_test,
              opacity = 1)
+
+htmlwidgets::saveWidget(grfica_train, "views//test.html")
 
 ## Nota: preguntar si year es el ano se creo el apartamento
 
@@ -67,6 +101,7 @@ leaflet() %>%
 
 parques <- opq(bbox = getbb("Bogota Colombia")) %>%
   add_osm_feature(key = "leisure" , value = "park") 
+
 
 # graficar 
 

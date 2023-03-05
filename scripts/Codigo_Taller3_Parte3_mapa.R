@@ -3,7 +3,7 @@
 #                      Problem Set 3: Making Money with ML?                     #
 # 
 #
-# Código predictores externos
+# Código Mapas totales
 #_____________________________________________________________________________#
 
 #   Autores: - Jorge Rodríguez                                                  

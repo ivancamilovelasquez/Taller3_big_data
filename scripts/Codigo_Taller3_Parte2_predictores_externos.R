@@ -212,7 +212,7 @@ centroides3_sf <- st_as_sf(centroides3, coords = c("x", "y"))
 centroides5_sf <- st_as_sf(centroides5, coords = c("x", "y"))
 
 
-# 3.4 Calculas distancias 
+# 3.4 Calcular distancias 
 
 dist_parque_train <- st_distance(x = train_sf, y = centroides_sf)
 dist_fitness_train <- st_distance(x = train_sf, y = centroides2_sf)
@@ -224,6 +224,17 @@ dist_parque_test <- st_distance(x = test_sf, y = centroides_sf)
 dist_fitness_test <- st_distance(x = test_sf, y = centroides2_sf)
 dist_playground_test <- st_distance(x = test_sf, y = centroides3_sf)
 dist_sports_centre_test <- st_distance(x = test_sf, y = centroides5_sf)
+
+write.csv(dist_parque_train, file = "data_ignore/dist_parque_train.csv")
+write.csv(dist_fitness_train, file = "data_ignore/dist_fitness_train.csv")
+write.csv(dist_playground_train, file = "data_ignore/dist_playground_train.csv")
+write.csv(dist_sports_centre_train, file = "data_ignore/dist_sports_centre_train.csv")
+
+write.csv(dist_parque_test, file = "data_ignore/dist_parque_test")
+write.csv(dist_fitness_test, file = "data_ignore/dist_fitness_test")
+write.csv(dist_playground_test, file = "data_ignore/dist_playground_test.csv")
+write.csv(dist_sports_centre_test, file = "data_ignore/dist_sports_centre_test.csv")
+
 
 
 

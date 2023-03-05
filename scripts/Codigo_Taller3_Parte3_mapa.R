@@ -42,7 +42,7 @@ grafica_train_completa <-  leaflet() %>% addTiles() %>%
 htmlwidgets::saveWidget(grafica_train_completa, "views//grafica_train_completa.html") 
 
 
-
+# 2.2 Test
 grafica_test_completa <-  leaflet() %>% addTiles() %>%
   addPolygons(data = parques_geometria, col ="yellow",
               opacity = 0.8, popup = parques_geometria$name) %>%

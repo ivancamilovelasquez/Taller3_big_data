@@ -156,14 +156,15 @@ centroides5 <- gCentroid(as(sports_centre_geometria$geometry, "Spatial"), byid =
 # Graficas 
 
 # Parques 
-leaflet() %>%
-  addTiles() %>%
-  addPolygons(data = parques_geometria, col = "green",
-              opacity = 0.8, popup = parques_geometria$name) %>% 
-addCircles(lng = centroides$x, 
-           lat = centroides$y, 
-           col = "red", opacity = 1, radius = 1)             
-              
+parques <- leaflet() %>%
+            addTiles() %>%
+            addPolygons(data = parques_geometria, col = "#003f88",
+            opacity = 0.8, popup = parques_geometria$name) %>% 
+            addCircles(lng = centroides$x, 
+            lat = centroides$y, 
+            col = "#ffd500", opacity = 1, radius = 1)             
+htmlwidgets::saveWidget(parques, "views//parques.html")
+
 
 #fitness_centre_sf
 leaflet() %>%
@@ -225,6 +226,8 @@ dist_fitness_test <- st_distance(x = test_sf, y = centroides2_sf)
 dist_playground_test <- st_distance(x = test_sf, y = centroides3_sf)
 dist_sports_centre_test <- st_distance(x = test_sf, y = centroides5_sf)
 
+
+
 write.csv(dist_parque_train, file = "data_ignore/dist_parque_train.csv")
 write.csv(dist_fitness_train, file = "data_ignore/dist_fitness_train.csv")
 write.csv(dist_playground_train, file = "data_ignore/dist_playground_train.csv")
@@ -236,19 +239,66 @@ write.csv(dist_playground_test, file = "data_ignore/dist_playground_test.csv")
 write.csv(dist_sports_centre_test, file = "data_ignore/dist_sports_centre_test.csv")
 
 
+# 3.4 Distancia minima 
+
+#Train
+dist_min_train_parque <- apply(dist_parque_train, 1, min)
+train$dist_min_train_parque <- dist_min_train_parque
+train$dist_min_train_parque <- dist_min_train_parque
+
+dist_min_train_fitness <- apply(dist_fitness_train, 1, min)
+train$dist_min_train_fitness <- dist_min_train_fitness
+train$dist_min_train_fitnesse <- dist_min_train_fitness
+
+dist_min_train_playground <- apply(dist_playground_train, 1, min)
+train$dist_min_train_playground <- dist_min_train_playground
+train$dist_min_train_playground <- dist_min_train_playground
+
+dist_min_train_parque <- apply(dist_parque_train, 1, min)
+train$dist_min_train_parque <- dist_min_train_parque
+train$dist_min_train_parque <- dist_min_train_parque
+
+dist_min_train_fitness <- apply(dist_fitness_train, 1, min)
+train$dist_min_train_fitness <- dist_min_train_fitness
+train$dist_min_train_fitnesse <- dist_min_train_fitness
+
+dist_min_train_playground <- apply(dist_playground_train, 1, min)
+train$dist_min_train_playground <- dist_min_train_playground
+train$dist_min_train_playground <- dist_min_train_playground
+
+#dist_min_train_sportc <- apply(dist_sports_centre_test, 1, min)
+#train$dist_min_train_parque <- dist_min_train_sportc
+#train$dist_min_train_parque <- dist_min_train_sportc
+
+#Test
+dist_min_test_parque <- apply(dist_parque_test, 1, min)
+test$dist_min_test_parque <- dist_min_test_parque
+test$dist_min_test_parque <- dist_min_test_parque
+
+dist_min_test_fitness <- apply(dist_fitness_test, 1, min)
+test$dist_min_test_fitness <- dist_min_test_fitness
+test$dist_min_test_fitnesse <- dist_min_test_fitness
+
+dist_min_test_playground <- apply(dist_playground_test, 1, min)
+test$dist_min_test_playground <- dist_min_test_playground
+test$dist_min_test_playground <- dist_min_test_playground
+
+dist_min_test_sportc <- apply(dist_sports_centre_test, 1, min)
+test$dist_min_test_parque <- dist_min_test_sportc
+test$dist_min_test_parque <- dist_min_test_sportc
 
 
-##############################################################
-dist_min <- apply(dist_matrix, 1, min)
-train$distancia_parque <- dist_min
-train$distancia_parque <- dist_min
 
+# 3.5 Area del parque más cercano 
 
-
-posicion <- apply(dist_matrix, 1, function(x) which(min(x) == x))
+posicion_train <- apply(dist_parque_train, 1, function(x) which(min(x) == x))
 areas <- st_area(parques_geometria)
-train$area_parque <- areas[posicion]
+train$area_parque <- areas[posicion_train]
 train$area_parque <- as.numeric(train$area_parque)
 
+
+posicion_test <- apply(dist_parque_test, 1, function(x) which(min(x) == x))
+areas <- st_area(parques_geometria)
+test$area_parque <- areas[posicion_test]
 
 

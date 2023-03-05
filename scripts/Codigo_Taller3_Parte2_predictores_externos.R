@@ -97,6 +97,8 @@ htmlwidgets::saveWidget(grfica_train, "views//test.html")
 
 
 available_tags("leisure")
+available_tags("amenity")
+
 
 # 3.1 Info externa : parques 
 
@@ -117,6 +119,39 @@ horse_riding <- opq(bbox = getbb("Bogota Colombia")) %>%
 
 sports_centre <- opq(bbox = getbb("Bogota Colombia")) %>%
   add_osm_feature(key = "leisure" , value = "sports_centre")
+
+
+hospital <- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "hospital")
+
+
+clinic<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "clinic")
+
+
+bus_station<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "bus_station")
+
+
+police<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "police")
+
+
+pub<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "pub")
+
+
+school<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "school")
+
+
+restaurant<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "restaurant")
+
+
+cinema<- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "amenity" , value = "restaurant")
+
 
 
 # 3.2 graficar variables externas
@@ -146,6 +181,46 @@ sports_centre_geometria <- sports_centre_sf$osm_polygons %>%
   select(osm_id, name)
 
 
+hospital_sf <- osmdata_sf(hospital)
+hospital_geometria <- hospital_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+clinic_sf <- osmdata_sf(clinic)
+clinic_geometria <- clinic_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+bus_station_sf <- osmdata_sf(bus_station)
+bus_station_geometria <- bus_station_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+police_sf <- osmdata_sf(police)
+police_geometria <- police_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+pub_sf <- osmdata_sf(pub)
+pub_geometria <- pub_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+school_sf <- osmdata_sf(school)
+school_geometria <- school_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+cinema_sf <- osmdata_sf(cinema)
+cinema_geometria <- cinema_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+restaurant_sf <- osmdata_sf(restaurant)
+restaurant_geometria <- restaurant_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
 centroides <- gCentroid(as(parques_geometria$geometry, "Spatial"), byid = T)
 centroides2 <- gCentroid(as(fitness_centre_geometria$geometry, "Spatial"), byid = T)
 centroides3 <- gCentroid(as(playground_geometria$geometry, "Spatial"), byid = T)
@@ -159,12 +234,12 @@ centroides5 <- gCentroid(as(sports_centre_geometria$geometry, "Spatial"), byid =
 parques <- leaflet() %>%
             addTiles() %>%
             addPolygons(data = parques_geometria, col = "#003f88",
-            opacity = 0.8, popup = parques_geometria$name) %>% 
+              opacity = 0.8, popup = parques_geometria$name) %>% 
             addCircles(lng = centroides$x, 
-            lat = centroides$y, 
-            col = "#ffd500", opacity = 1, radius = 1)             
-htmlwidgets::saveWidget(parques, "views//parques.html")
-
+              lat = centroides$y, 
+              col = "#ffd500", opacity = 1, radius = 1) 
+htmlwidgets::saveWidget(parques, "views//parques.html")  
+  
 
 #fitness_centre_sf
 leaflet() %>%
@@ -199,6 +274,31 @@ leaflet() %>%
 
 
 
+#hospitales
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = hospital_geometria, col = "green",
+              opacity = 0.8, popup = hospital_geometria$name) 
+  
+
+
+#clinic
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = clinic_geometria, col = "green",
+              opacity = 0.8, popup = clinic_geometria$name) 
+
+
+
+#bus_station_geometria
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = bus_station_geometria, col = "green",
+              opacity = 0.8, popup = bus_station_geometria$name)
+
+
+
+
 # 3.3 Convertir data espacial 
 
 train_sf <- st_as_sf(train, coords = c("lon", "lat"))
@@ -221,22 +321,30 @@ dist_playground_train <- st_distance(x = train_sf, y = centroides3_sf)
 dist_sports_centre_train <- st_distance(x = train_sf, y = centroides5_sf)
 
 
+hospital_centre_train <- st_distance(x = train_sf, y = hospital_geometria)
+clinic_centre_train <- st_distance(x = train_sf, y = clinic_geometria)
+busstation_centre_train <- st_distance(x = train_sf, y = bus_station_geometria)
+police_centre_train <- st_distance(x = train_sf, y = police_geometria)
+pub_centre_train <- st_distance(x = train_sf, y = pub_geometria)
+school_centre_train <- st_distance(x = train_sf, y = school_geometria)
+cinema_centre_train <- st_distance(x = train_sf, y = cinema_geometria)
+restaurante_centre_train <- st_distance(x = train_sf, y = restaurant_geometria)
+
+
 dist_parque_test <- st_distance(x = test_sf, y = centroides_sf)
 dist_fitness_test <- st_distance(x = test_sf, y = centroides2_sf)
 dist_playground_test <- st_distance(x = test_sf, y = centroides3_sf)
 dist_sports_centre_test <- st_distance(x = test_sf, y = centroides5_sf)
 
 
-
-write.csv(dist_parque_train, file = "data_ignore/dist_parque_train.csv")
-write.csv(dist_fitness_train, file = "data_ignore/dist_fitness_train.csv")
-write.csv(dist_playground_train, file = "data_ignore/dist_playground_train.csv")
-write.csv(dist_sports_centre_train, file = "data_ignore/dist_sports_centre_train.csv")
-
-write.csv(dist_parque_test, file = "data_ignore/dist_parque_test")
-write.csv(dist_fitness_test, file = "data_ignore/dist_fitness_test")
-write.csv(dist_playground_test, file = "data_ignore/dist_playground_test.csv")
-write.csv(dist_sports_centre_test, file = "data_ignore/dist_sports_centre_test.csv")
+hospital_centre_test <- st_distance(x = test_sf, y = hospital_geometria)
+clinic_centre_test <- st_distance(x = test_sf, y = clinic_geometria)
+busstation_centre_test <- st_distance(x = test_sf, y = bus_station_geometria)
+police_centre_test <- st_distance(x = test_sf, y = police_geometria)
+pub_centre_test <- st_distance(x = test_sf, y = pub_geometria)
+school_centre_test <- st_distance(x = test_sf, y = school_geometria)
+cinema_centre_test <- st_distance(x = test_sf, y = cinema_geometria)
+restaurante_centre_test <- st_distance(x = test_sf, y = restaurant_geometria)
 
 
 # 3.4 Distancia minima 
@@ -254,9 +362,49 @@ dist_min_train_playground <- apply(dist_playground_train, 1, min)
 train$dist_min_train_playground <- dist_min_train_playground
 train$dist_min_train_playground <- dist_min_train_playground
 
-#dist_min_train_sportc <- apply(dist_sports_centre_test, 1, min)
-#train$dist_min_train_parque <- dist_min_train_sportc
-#train$dist_min_train_parque <- dist_min_train_sportc
+#dist_min_train_sportc <- apply(dist_min_train_sportc, 1, min)
+#train$dist_min_train_sportc <- dist_min_train_sportc
+#train$dist_min_train_sportc <- dist_min_train_sportc
+
+
+dist_hospital_centre_train <- apply(hospital_centre_train, 1, min)
+train$dist_hospital_centre_train <- dist_hospital_centre_train
+train$dist_hospital_centre_train <- dist_hospital_centre_train
+
+
+dist_clinic_centre_train <- apply(clinic_centre_train, 1, min)
+train$dist_clinic_centre_train <- dist_clinic_centre_train
+train$dist_clinic_centre_train <- dist_clinic_centre_train
+
+
+dist_busstation_centre_train <- apply(busstation_centre_train, 1, min)
+train$dist_busstation_centre_train <- dist_busstation_centre_train
+train$dist_busstation_centre_train <- dist_busstation_centre_train
+
+
+dist_police_centre_train <- apply(police_centre_train, 1, min)
+train$dist_police_centre_train <- dist_police_centre_train
+train$dist_police_centre_train <- dist_police_centre_train
+
+
+dist_pub_centre_train <- apply(pub_centre_train, 1, min)
+train$dist_pub_centre_train <- dist_pub_centre_train
+train$dist_pub_centre_train <- dist_pub_centre_train
+
+
+dist_school_centre_train <- apply(school_centre_train, 1, min)
+train$dist_school_centre_train <- dist_school_centre_train
+train$dist_school_centre_train <- dist_school_centre_train
+
+
+dist_cinema_centre_train <- apply(cinema_centre_train, 1, min)
+train$dist_cinema_centre_train <- dist_cinema_centre_train
+train$dist_cinema_centre_train <- dist_cinema_centre_train
+
+
+dist_restaurante_centre_train <- apply(restaurante_centre_train, 1, min)
+train$dist_restaurante_centre_train <- dist_restaurante_centre_train
+train$dist_restaurante_centre_train <- dist_restaurante_centre_train
 
 
 #Test
@@ -272,10 +420,50 @@ dist_min_test_playground <- apply(dist_playground_test, 1, min)
 test$dist_min_test_playground <- dist_min_test_playground
 test$dist_min_test_playground <- dist_min_test_playground
 
-dist_min_test_sportc <- apply(dist_sports_centre_test, 1, min)
-test$dist_min_test_parque <- dist_min_test_sportc
-test$dist_min_test_parque <- dist_min_test_sportc
+dist_min_test_sportc <- apply(dist_min_test_sportc, 1, min)
+test$dist_min_test_sportc <- dist_min_test_sportc
+test$dist_min_test_sportc <- dist_min_test_sportc
 
+
+dist_hospital_centre_test <- apply(hospital_centre_test, 1, min)
+test$dist_hospital_centre_test <- dist_hospital_centre_test
+test$dist_hospital_centre_test <- dist_hospital_centre_test
+
+
+dist_clinic_centre_test <- apply(clinic_centre_test, 1, min)
+test$dist_clinic_centre_test <- dist_clinic_centre_test
+test$dist_clinic_centre_test <- dist_clinic_centre_test
+
+
+dist_busstation_centre_test <- apply(busstation_centre_test, 1, min)
+test$dist_busstation_centre_test <- dist_busstation_centre_test
+test$dist_busstation_centre_test <- dist_busstation_centre_test
+
+
+dist_police_centre_test <- apply(police_centre_test, 1, min)
+test$dist_police_centre_test <- dist_police_centre_test
+test$dist_police_centre_test <- dist_police_centre_test
+
+
+dist_pub_centre_test <- apply(pub_centre_test, 1, min)
+test$dist_pub_centre_test <- dist_pub_centre_test
+test$dist_pub_centre_test <- dist_pub_centre_test
+
+
+
+dist_school_centre_test <- apply(school_centre_test, 1, min)
+test$dist_school_centre_test <- dist_school_centre_test
+test$dist_school_centre_test <- dist_school_centre_test
+
+
+dist_cinema_centre_test <- apply(cinema_centre_test, 1, min)
+test$dist_cinema_centre_test <- dist_cinema_centre_test
+test$dist_cinema_centre_test <- dist_cinema_centre_test
+
+
+dist_restaurante_centre_test <- apply(restaurante_centre_test, 1, min)
+test$dist_restaurante_centre_test <- dist_restaurante_centre_test
+test$dist_restaurante_centre_test <- dist_restaurante_centre_test
 
 
 # 3.5 Area del parque más cercano 
@@ -292,23 +480,42 @@ test$area_parque <- areas[posicion_test]
 
 
 
-
 # 3.6 Exportar datos
 
 train <- train %>% 
   mutate(dist_min_train_fitness = round(dist_min_train_fitness),
          dist_min_train_parque = round(dist_min_train_parque),
          dist_min_train_playground = round(dist_min_train_playground),
+         dist_hospital_centre_train = round(dist_hospital_centre_train),
+         dist_clinic_centre_train = round(dist_clinic_centre_train),
+         dist_busstation_centre_train = round(dist_busstation_centre_train),
+         dist_police_centre_train = round(dist_police_centre_train),
+         dist_pub_centre_train = round(dist_pub_centre_train),
+         dist_school_centre_train = round(dist_school_centre_train),
+         dist_cinema_centre_train = round(dist_cinema_centre_train),
+         dist_restaurante_centre_train = round(dist_restaurante_centre_train),
          area_parque = round(area_parque))
+
 
 test <- test %>% 
   mutate(dist_min_test_fitness = round(dist_min_test_fitness),
          dist_min_test_parque = round(dist_min_test_parque),
          dist_min_test_playground = round(dist_min_test_playground),
-         dist_min_test_sportc = round(dist_min_test_sportc))
+         dist_min_test_sportc = round(dist_min_test_sportc),
+         dist_hospital_centre_test = round(dist_hospital_centre_test),
+         dist_clinic_centre_test = round(dist_clinic_centre_test),
+         dist_busstation_centre_test = round(dist_busstation_centre_test),
+         dist_police_centre_test = round(dist_police_centre_test),
+         dist_school_centre_test = round(dist_school_centre_test),
+         dist_pub_centre_test = round(dist_pub_centre_test),
+         dist_cinema_centre_test = round(dist_cinema_centre_test),
+         dist_restaurante_centre_test = round(dist_restaurante_centre_test))
 
 
 options(scipen = 999)
 write.csv(train, file = "data_ignore/train_final.csv")
 write.csv(test, file = "data_ignore/test_final.csv")
+
+
+
 

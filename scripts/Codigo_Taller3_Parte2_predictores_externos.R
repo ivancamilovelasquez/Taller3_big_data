@@ -96,22 +96,64 @@ htmlwidgets::saveWidget(grfica_train, "views//test.html")
 ## Nota: preguntar si year es el ano se creo el apartamento
 
 
+available_tags("leisure")
 
 # 3.1 Info externa : parques 
 
 parques <- opq(bbox = getbb("Bogota Colombia")) %>%
   add_osm_feature(key = "leisure" , value = "park") 
 
+fitness_centre <- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "leisure" , value = "fitness_centre")
 
-# graficar 
+
+playground <- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "leisure" , value = "playground")
+
+
+horse_riding <- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "leisure" , value = "horse_riding")
+
+
+sports_centre <- opq(bbox = getbb("Bogota Colombia")) %>%
+  add_osm_feature(key = "leisure" , value = "sports_centre")
+
+
+# 3.2 graficar variables externas
 
 centroides <- gCentroid(as(parques_geometria$geometry, "Spatial"), byid = T)
+centroides2 <- gCentroid(as(fitness_centre_geometria$geometry, "Spatial"), byid = T)
+centroides3 <- gCentroid(as(playground_geometria$geometry, "Spatial"), byid = T)
+centroides4 <- gCentroid(as(horse_riding_geometria$geometry, "Spatial"), byid = T)
+centroides5 <- gCentroid(as(sports_centre_geometria$geometry, "Spatial"), byid = T)
+
 
 parques_sf <- osmdata_sf(parques)
 parques_geometria <- parques_sf$osm_polygons %>% 
   select(osm_id, name)
 
 
+fitness_centre_sf <- osmdata_sf(fitness_centre)
+fitness_centre_geometria <- fitness_centre_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+playground_sf <- osmdata_sf(playground)
+playground_geometria <- playground_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+horse_riding_sf <- osmdata_sf(horse_riding)
+horse_riding_geometria <- horse_riding_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+sports_centre_sf <- osmdata_sf(sports_centre)
+sports_centre_geometria <- sports_centre_sf$osm_polygons %>% 
+  select(osm_id, name)
+
+
+# Parques 
 leaflet() %>%
   addTiles() %>%
   addPolygons(data = parques_geometria, col = "green",
@@ -121,18 +163,67 @@ addCircles(lng = centroides$x,
            col = "red", opacity = 1, radius = 1)             
               
 
-available_tags("leisure")
+#fitness_centre_sf
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = fitness_centre_geometria, col = "green",
+              opacity = 0.8, popup = fitness_centre_geometria$name) %>% 
+  addCircles(lng = centroides$x, 
+             lat = centroides$y, 
+             col = "red", opacity = 1, radius = 1) 
 
 
 
-# convertir data espacial 
+#playground_sf
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = playground_geometria, col = "green",
+              opacity = 0.8, popup = playground_geometria$name) %>% 
+  addCircles(lng = centroides$x, 
+             lat = centroides$y, 
+             col = "red", opacity = 1, radius = 1)
+
+
+
+#sports_centre_geometria
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = sports_centre_geometria, col = "green",
+              opacity = 0.8, popup = sports_centre_geometria$name) %>% 
+  addCircles(lng = centroides$x, 
+             lat = centroides$y, 
+             col = "red", opacity = 1, radius = 1)
+
+
+
+# 3.3 Convertir data espacial 
+
 train_sf <- st_as_sf(train, coords = c("lon", "lat"))
 st_crs(train_sf) <- 4326
+test_sf <- st_as_sf(test, coords = c("lon", "lat"))
+st_crs(test_sf) <- 4326
+
+
 centroides_sf <- st_as_sf(centroides, coords = c("x", "y"))
+centroides2_sf <- st_as_sf(centroides2, coords = c("x", "y"))
+centroides3_sf <- st_as_sf(centroides3, coords = c("x", "y"))
+centroides5_sf <- st_as_sf(centroides5, coords = c("x", "y"))
 
-dist_matrix <- st_distance(x = train_sf, y = centroides_sf)
+
+dist_parque_train <- st_distance(x = train_sf, y = centroides_sf)
+dist_fitness_train <- st_distance(x = train_sf, y = centroides2_sf)
+dist_playground_train <- st_distance(x = train_sf, y = centroides3_sf)
+dist_sports_centre_train <- st_distance(x = train_sf, y = centroides5_sf)
 
 
+dist_parque_test <- st_distance(x = test_sf, y = centroides_sf)
+dist_fitness_test <- st_distance(x = test_sf, y = centroides2_sf)
+dist_playground_test <- st_distance(x = test_sf, y = centroides3_sf)
+dist_sports_centre_test <- st_distance(x = test_sf, y = centroides5_sf)
+
+
+
+##############################################################
 dist_min <- apply(dist_matrix, 1, min)
 train$distancia_parque <- dist_min
 train$distancia_parque <- dist_min

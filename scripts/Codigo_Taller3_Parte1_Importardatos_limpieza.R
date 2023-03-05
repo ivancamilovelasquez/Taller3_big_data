@@ -24,7 +24,7 @@ library(pacman)
 p_load(tidyverse, ggplot2, openxlsx, scales, skimr, stringi, SnowballC, stringr)
 
 
-# 1. Definir directorio 
+# 1 Definir directorio 
 
 #Iván
 setwd("D:/2023/ANDES/Big data/Taller3")
@@ -175,6 +175,11 @@ data$piscina <- grepl("piscina", data$description)
 data$terraza <- grepl("terraza", data$description)
 data$campestre <- grepl("campestre", data$description)
 
+
+data$area_maxima <- pmax(data$surface_total, data$surface_covered,
+                          data$maximo_metros, na.rm = TRUE)
+
+data$area_maxima <- as.numeric(data$area_maxima)
 
 assign(obj, data)
 rm(data)

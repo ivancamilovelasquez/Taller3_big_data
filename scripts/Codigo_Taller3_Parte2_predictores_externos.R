@@ -121,13 +121,6 @@ sports_centre <- opq(bbox = getbb("Bogota Colombia")) %>%
 
 # 3.2 graficar variables externas
 
-centroides <- gCentroid(as(parques_geometria$geometry, "Spatial"), byid = T)
-centroides2 <- gCentroid(as(fitness_centre_geometria$geometry, "Spatial"), byid = T)
-centroides3 <- gCentroid(as(playground_geometria$geometry, "Spatial"), byid = T)
-centroides4 <- gCentroid(as(horse_riding_geometria$geometry, "Spatial"), byid = T)
-centroides5 <- gCentroid(as(sports_centre_geometria$geometry, "Spatial"), byid = T)
-
-
 parques_sf <- osmdata_sf(parques)
 parques_geometria <- parques_sf$osm_polygons %>% 
   select(osm_id, name)
@@ -152,6 +145,15 @@ sports_centre_sf <- osmdata_sf(sports_centre)
 sports_centre_geometria <- sports_centre_sf$osm_polygons %>% 
   select(osm_id, name)
 
+
+centroides <- gCentroid(as(parques_geometria$geometry, "Spatial"), byid = T)
+centroides2 <- gCentroid(as(fitness_centre_geometria$geometry, "Spatial"), byid = T)
+centroides3 <- gCentroid(as(playground_geometria$geometry, "Spatial"), byid = T)
+centroides4 <- gCentroid(as(horse_riding_geometria$geometry, "Spatial"), byid = T)
+centroides5 <- gCentroid(as(sports_centre_geometria$geometry, "Spatial"), byid = T)
+
+
+# Graficas 
 
 # Parques 
 leaflet() %>%
@@ -209,6 +211,8 @@ centroides2_sf <- st_as_sf(centroides2, coords = c("x", "y"))
 centroides3_sf <- st_as_sf(centroides3, coords = c("x", "y"))
 centroides5_sf <- st_as_sf(centroides5, coords = c("x", "y"))
 
+
+# 3.4 Calculas distancias 
 
 dist_parque_train <- st_distance(x = train_sf, y = centroides_sf)
 dist_fitness_train <- st_distance(x = train_sf, y = centroides2_sf)

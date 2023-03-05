@@ -254,21 +254,10 @@ dist_min_train_playground <- apply(dist_playground_train, 1, min)
 train$dist_min_train_playground <- dist_min_train_playground
 train$dist_min_train_playground <- dist_min_train_playground
 
-dist_min_train_parque <- apply(dist_parque_train, 1, min)
-train$dist_min_train_parque <- dist_min_train_parque
-train$dist_min_train_parque <- dist_min_train_parque
-
-dist_min_train_fitness <- apply(dist_fitness_train, 1, min)
-train$dist_min_train_fitness <- dist_min_train_fitness
-train$dist_min_train_fitnesse <- dist_min_train_fitness
-
-dist_min_train_playground <- apply(dist_playground_train, 1, min)
-train$dist_min_train_playground <- dist_min_train_playground
-train$dist_min_train_playground <- dist_min_train_playground
-
 #dist_min_train_sportc <- apply(dist_sports_centre_test, 1, min)
 #train$dist_min_train_parque <- dist_min_train_sportc
 #train$dist_min_train_parque <- dist_min_train_sportc
+
 
 #Test
 dist_min_test_parque <- apply(dist_parque_test, 1, min)
@@ -301,4 +290,25 @@ posicion_test <- apply(dist_parque_test, 1, function(x) which(min(x) == x))
 areas <- st_area(parques_geometria)
 test$area_parque <- areas[posicion_test]
 
+
+
+
+# 3.6 Exportar datos
+
+train <- train %>% 
+  mutate(dist_min_train_fitness = round(dist_min_train_fitness),
+         dist_min_train_parque = round(dist_min_train_parque),
+         dist_min_train_playground = round(dist_min_train_playground),
+         area_parque = round(area_parque))
+
+test <- test %>% 
+  mutate(dist_min_test_fitness = round(dist_min_test_fitness),
+         dist_min_test_parque = round(dist_min_test_parque),
+         dist_min_test_playground = round(dist_min_test_playground),
+         dist_min_test_sportc = round(dist_min_test_sportc))
+
+
+options(scipen = 999)
+write.csv(train, file = "data_ignore/train_final.csv")
+write.csv(test, file = "data_ignore/test_final.csv")
 

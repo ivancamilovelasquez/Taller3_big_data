@@ -125,7 +125,7 @@ data$casa <- ifelse(data$casa, 1, 0)
 
 #1.3.6 crear la variable metros cuadrados
 
-#Expresiones regulares de metros cuadrados 
+#Expresiones regulares de metros cuadrados desde description
 data$numero_antes_m2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*m2)")
 data$numero_despues_m2 <- str_extract(data$description, "(?<=m2\\s)\\d{2,3}")
 data$numero_antes_metros <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*metros)")
@@ -142,15 +142,36 @@ data$numero_antes_metros_c2 <- str_extract(data$description, "\\b\\d{2,3}(?=\\s*
 data$numero_despues_metros_c2 <- str_extract(data$description, "(?<=metros cuadrados\\s)\\d{2,3}")
 
 
+data$numero_antes_m2_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*m2)")
+data$numero_despues_m2_t <- str_extract(data$titulo, "(?<=m2\\s)\\d{2,3}")
+data$numero_antes_metros_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*metros)")
+data$numero_despues_metros_t <- str_extract(data$titulo, "(?<=metros\\s)\\d{2,3}")
+data$numero_antes_mt_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*mt)")
+data$numero_despues_mt_t <- str_extract(data$titulo, "(?<=mt\\s)\\d{2,3}")
+data$numero_antes_mts_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*mts)")
+data$numero_despues_mts_t <- str_extract(data$titulo, "(?<=mts\\s)\\d{2,3}")
+data$numero_antes_mt2_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*mt2)")
+data$numero_despues_mt2_t <- str_extract(data$titulo, "(?<=mt2\\s)\\d{2,3}")
+data$numero_antes_mts2_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*mts2)")
+data$numero_despues_mts2_t <- str_extract(data$titulo, "(?<=mts2\\s)\\d{2,3}")
+data$numero_antes_metros_c2_t <- str_extract(data$titulo, "\\b\\d{2,3}(?=\\s*metros cuadrados)")
+data$numero_despues_metros_c2_t <- str_extract(data$titulo, "(?<=metros cuadrados\\s)\\d{2,3}")
+
 data$maximo_metros <- pmax(data$numero_antes_m2, data$numero_despues_m2, data$numero_antes_metros, data$numero_despues_metros,
                             data$numero_antes_mt, data$numero_despues_mt, data$numero_antes_mts , data$numero_despues_mts, 
                             data$numero_antes_mt2, data$numero_despues_mt2, data$numero_antes_mts2, data$numero_despues_mts2, data$numero_antes_metros_c2,
-                            data$numero_despues_metros_c2, na.rm = TRUE)
+                            data$numero_despues_metros_c2, data$numero_antes_m2_t, data$numero_despues_m2_t, data$numero_antes_metros_t, data$numero_despues_metros_t,
+                           data$numero_antes_mt_t, data$numero_despues_mt_t, data$numero_antes_mts_t , data$numero_despues_mts_t, 
+                           data$numero_antes_mt2_t, data$numero_despues_mt2_t , data$numero_antes_mts2_t , data$numero_despues_mts2_t, data$numero_antes_metros_c2_t,
+                           data$numero_despues_metros_c2_t, na.rm = TRUE)
 
 
 data <- subset(data, select = -c(numero_antes_m2,numero_despues_m2, numero_antes_metros, numero_despues_metros, 
-                                   numero_antes_mt, numero_despues_mt, numero_antes_mts, numero_despues_mts, numero_antes_mt2,
-                                   numero_despues_mt2, numero_antes_mts2, numero_despues_mts2, numero_antes_metros_c2,  numero_despues_metros_c2))
+                                 numero_antes_mt, numero_despues_mt, numero_antes_mts, numero_despues_mts, numero_antes_mt2,
+                                 numero_despues_mt2, numero_antes_mts2, numero_despues_mts2, numero_antes_metros_c2,  numero_despues_metros_c2,
+                                 numero_antes_m2_t,numero_despues_m2_t, numero_antes_metros_t, numero_despues_metros_t, 
+                                 numero_antes_mt_t, numero_despues_mt_t, numero_antes_mts_t, numero_despues_mts_t, numero_antes_mt2_t,
+                                 numero_despues_mt2_t, numero_antes_mts2_t, numero_despues_mts2_t, numero_antes_metros_c2_t,  numero_despues_metros_c2_t))
 
 
 #1.3.7 crear la variable número de garajes

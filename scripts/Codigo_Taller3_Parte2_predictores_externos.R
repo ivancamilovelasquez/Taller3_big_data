@@ -98,4 +98,16 @@ centroides_sf <- st_as_sf(centroides, coords = c("x", "y"))
 dist_matrix <- st_distance(x = train_sf, y = centroides_sf)
 
 
+dist_min <- apply(dist_matrix, 1, min)
+train$distancia_parque <- dist_min
+train$distancia_parque <- dist_min
+
+
+
+posicion <- apply(dist_matrix, 1, function(x) which(min(x) == x))
+areas <- st_area(parques_geometria)
+train$area_parque <- areas[posicion]
+train$area_parque <- as.numeric(train$area_parque)
+
+
 

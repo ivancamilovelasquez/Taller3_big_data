@@ -167,3 +167,21 @@ y_hat_outsample3 = predict(mod3, newdata = t_test)
 MAE(y_pred = y_hat_outsample3, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample3, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample3, y_true = t_test$price)
+
+
+
+
+
+
+
+# El mejor modelo es ...
+
+modelo_final = mod4
+y_predict <- predict(modelo_final, newdata = test_final)
+
+predictmod1 <- data.frame(
+  property_id = test_final$property_id,
+  price = y_predict     
+)
+predictmod1
+write.csv(predictmod1, "~/MAESTRIA/Taller 3 Big Data/predictmod1.csv", row.names =  FALSE)

@@ -142,9 +142,28 @@ mod2 <- train(price~as.factor(year) + bedrooms + as.factor(casa)  + dist_min_tra
               tuneGrid = grid)
 mod2
 
-
+## Métricas modelo 2
 y_hat_outsample2 = predict(mod2, newdata = t_test)
 MAE(y_pred = y_hat_outsample2, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample2, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample2, y_true = t_test$price)
 
+#Modelo 3: GBM ----
+grid_gbm<-expand.grid(n.trees=1000,interaction.depth=5,shrinkage=0.01,n.minobsinnode = 20)
+mod3 <- train(price ~ bedrooms + as.factor(casa)  + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train,
+              data = t_train, 
+              method = "gbm", 
+              trControl = cv1,
+              metric = "RSME",
+              tuneGrid = grid_gbm
+)
+
+mod3
+
+## Métricas modelo 2
+y_hat_outsample3 = predict(mod3, newdata = t_test)
+MAE(y_pred = y_hat_outsample3, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample3, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample3, y_true = t_test$price)

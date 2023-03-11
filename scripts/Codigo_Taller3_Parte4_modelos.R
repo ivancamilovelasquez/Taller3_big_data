@@ -1,9 +1,9 @@
 #_____________________________________________________________________________#
 #                                                                             #
-#                      Problem Set 3: Making Money with ML?                     #
+#                      Problem Set 3: Making Money with ML?                   #
 # 
 #
-# Código Mapas totales
+# Código Modelos
 #_____________________________________________________________________________#
 
 #   Autores: - Jorge Rodríguez                                                  

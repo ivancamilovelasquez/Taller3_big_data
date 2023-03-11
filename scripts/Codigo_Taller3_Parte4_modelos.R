@@ -67,3 +67,21 @@ t_test  <- train_final[-inTrain,]
 # 
 # train_final <- train_final[,-41]
 
+p_load(MLmetrics)
+
+#Modelo 1: Regresión lineal ----
+cv1 <- trainControl(number = 5, method = "cv")
+
+mod1 <- train(price ~ bedrooms + garaje + as.factor(year) + casa  + dist_min_train_parque + dist_min_train_fitness 
+              + area_parque + dist_hospital_centre_train + dist_busstation_centre_train, 
+              data = t_train, 
+              method = "lm",
+              trControl = cv1
+)
+mod1
+
+## Métricas modelo 1
+y_hat_outsample1 = predict(mod1, newdata = t_test)
+MAE(y_pred = y_hat_outsample1, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample1, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample1, y_true = t_test$price)

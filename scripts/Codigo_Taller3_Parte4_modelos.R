@@ -48,6 +48,13 @@ test_final$piscina <-  as.factor(test_final$piscina)
 test_final$terraza <- as.factor(test_final$terraza)
 test_final$campestre <- as.factor(test_final$campestre) 
 
+# Ver cuantos datso faltantes hay en la variable de superficie 
+filtro <- is.na(train_final$surface_covered)
+sum(filtro)
+filtro2 <- is.na(train_final$surface_total)
+sum(filtro2)
+
+
 #Partir la base de Train en 2: t_train y t_test ----
 p_load(caret)
 set.seed(1234)
@@ -60,6 +67,22 @@ inTrain <- createDataPartition(
 
 t_train <- train_final[ inTrain,]
 t_test  <- train_final[-inTrain,]
+
+filtro <- is.na(t_train$surface_covered)
+sum(filtro)
+filtro2 <- is.na(t_train$surface_total)
+sum(filtro2)
+
+# Hay muchos datos faltantes de estas variables claves
+# Grafico de distribucion de las areas de las propiedades 
+
+p <- ggplot(train_final, aes(x = area_maxima)) +
+  geom_histogram(fill = "darkblue", alpha = 0.4) +
+  labs(x = "Metros cuadrados", y = "Cantidad") +
+  scale_x_log10(labels = scales::dollar) +
+  theme_bw()
+
+ggplotly(p)
 
 # train_final$a <- ifelse(train_final$surface_covered != 0, 1, 0)
 # 

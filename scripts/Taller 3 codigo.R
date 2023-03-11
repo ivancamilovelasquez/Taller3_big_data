@@ -51,6 +51,8 @@ test_final$campestre <- as.factor(test_final$campestre)
 #Partir la base de Train en 2: t_train y t_test
 p_load(caret)
 
+set.seed(1234)
+
 inTrain <- createDataPartition(
   y = train_final$price,## La variable dependiente u objetivo 
   p = .7, ## Usamos 70%  de los datos en el conjunto de entrenamiento 

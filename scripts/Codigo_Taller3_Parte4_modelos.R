@@ -162,14 +162,33 @@ mod3 <- train(price ~ bedrooms + as.factor(casa)  + dist_min_train_parque + dist
 
 mod3
 
-## Métricas modelo 2
+## Métricas modelo 3
 y_hat_outsample3 = predict(mod3, newdata = t_test)
 MAE(y_pred = y_hat_outsample3, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample3, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample3, y_true = t_test$price)
 
+#Modelo 4: Ramdon Forest
+cv <- trainControl(method = "cv",number = 10,search = "grid")
+tunegrid_rf <- expand.grid(mtry = 5, 
+                           min.node.size = 10,
+                           splitrule = "variance")
 
+mod4 <- train(price ~ bedrooms + as.factor(casa)  + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+                dist_cinema_centre_train + dist_pub_centre_train + dist_min_train_playground,
+              data = t_train, 
+              method = "ranger", 
+              trControl = cv,
+              metric = 'MAE', 
+              tuneGrid = tunegrid_rf)
 
+mod4
+y_hat_outsample4 = predict(mod4, newdata = t_test)
+MAE(y_pred = y_hat_outsample4, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample4, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample4, y_true = t_test$price)
 
 
 

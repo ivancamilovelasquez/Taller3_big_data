@@ -84,6 +84,25 @@ p <- ggplot(train_final, aes(x = area_maxima)) +
 
 ggplotly(p)
 
+# Eslacar los datos----
+variables_numericas <- c("dist_min_train_parque", "dist_min_train_fitness", "area_parque", 
+                         "dist_hospital_centre_train","dist_busstation_centre_train", "dist_police_centre_train", 
+                         "dist_school_centre_train", "dist_restaurante_centre_train")
+
+escalador <- preProcess(train_final[, variables_numericas],
+                        method = c("center", "scale"))
+
+train_final[, variables_numericas] <- predict(escalador, train_final[, variables_numericas])
+test_final[, variables_numericas] <- predict(escalador, test_final[, variables_numericas])
+
+
+escalador1 <- preProcess(t_train[, variables_numericas],
+                        method = c("center", "scale"))
+
+t_train[, variables_numericas] <- predict(escalador, t_train[, variables_numericas])
+t_test[, variables_numericas] <- predict(escalador, t_test[, variables_numericas])
+
+
 # train_final$a <- ifelse(train_final$surface_covered != 0, 1, 0)
 # 
 # prop.table(table(train_final$a, exclude = NULL))

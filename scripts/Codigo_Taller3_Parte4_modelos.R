@@ -127,3 +127,24 @@ y_hat_outsample1 = predict(mod1, newdata = t_test)
 MAE(y_pred = y_hat_outsample1, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample1, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample1, y_true = t_test$price)
+
+##Modelo 2: Arbol de decision ----
+cv <- trainControl(number = 10, method = "cv")
+# especificamos la grilla de los alphas
+grid <- expand.grid(cp = seq(0, 0.03, 0.001))
+
+mod2 <- train(price~as.factor(year) + bedrooms + as.factor(casa)  + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+               dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + 
+               campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train,
+              data = t_train, 
+              method = "rpart", 
+              trControl = cv,
+              tuneGrid = grid)
+mod2
+
+
+y_hat_outsample2 = predict(mod2, newdata = t_test)
+MAE(y_pred = y_hat_outsample2, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample2, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample2, y_true = t_test$price)
+

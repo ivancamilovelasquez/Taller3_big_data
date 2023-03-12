@@ -211,6 +211,30 @@ MAE(y_pred = y_hat_outsample6, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample6, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample6, y_true = t_test$price)
 
+#Modelo 7: Regresión Ridge ----
+
+lambda_grid <- 10^seq(-4, 0.01, length = 200)
+
+mod7 <- train(price ~ bedrooms + as.factor(casa) + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+                dist_cinema_centre_train + dist_pub_centre_train + as.factor(year), 
+              data = t_train, 
+              method = "glmnet",
+              trControl = cv2,
+              metric = "RMSE",
+              tuneGrid = expand.grid(alpha = 0,lambda=lambda_grid), 
+              preProcess = c("center", "scale")
+)
+
+mod7
+
+## Métricas modelo 7
+y_hat_outsample7 = predict(mod7, newdata = t_test)
+
+MAE(y_pred = y_hat_outsample7, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample7, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample7, y_true = t_test$price)
 
 #Modelo 9: Bagging ----
 p_load(ipred)

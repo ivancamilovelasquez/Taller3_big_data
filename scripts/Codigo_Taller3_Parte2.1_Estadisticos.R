@@ -18,7 +18,7 @@ rm(list = ls())
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(readr,openxlsx, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
+p_load(readr,openxlsx, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly, ggplot2)
 
 # - Importar base
 
@@ -92,4 +92,23 @@ write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Prob
 
 # Gráfico
 
+df <- train[c("mujer","edad", 
+              "Ingtotug", "numero_personas", 
+              "exp_trab_actual", "horas_trab_usual", 
+              "num_menores", "Pobre")]
+df$Pobre <- factor(df$Pobre, labels = c("No pobre", "Pobre"))
+
+g <- ggpairs(df, columns = 2:6, ggplot2::aes(colour = Pobre)) +
+  theme_minimal() + 
+  labs(title = "Gráfico de matriz de dispersión") + 
+  scale_y_continuous(labels = scales::number_format()) + 
+  scale_x_continuous(labels = scales::number_format()) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text = element_text(size = 8))
+
+# Limpiar el dispositivo gráfico
+graphics.off()
+
+# Imprimir el gráfico de nuevo
+print(g)
 

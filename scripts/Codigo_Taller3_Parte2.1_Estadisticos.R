@@ -73,3 +73,19 @@ estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x)
 write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/Estadisticos_todos.xlsx")
 
 
+# Test 
+
+Base_descriptivas <- test_final[c("price","bedrooms", "apto_total", "garaje",
+                                   "piscina", "terraza", 
+                                   "campestre","dist_min_train_parque", 
+                                   "dist_min_train_fitness", "dist_min_train_fitnesse",
+                                   "dist_min_train_playground", "dist_hospital_centre_train",
+                                   "dist_clinic_centre_train", "dist_police_centre_train",
+                                   "dist_school_centre_train", "dist_restaurante_centre_train",
+                                   "dist_cinema_centre_train")]
+
+estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x) 
+  c(mean = mean(x), sd = sd(x))))
+
+write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/Estadisticos_todos_test.xlsx")
+

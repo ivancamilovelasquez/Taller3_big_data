@@ -18,7 +18,12 @@ rm(list = ls())
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
+p_load(readr, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
+
+# - Importar base
+
+library(readr)
+test_final <- read_csv("C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/test_final.csv")
 
 test_final
 train_final

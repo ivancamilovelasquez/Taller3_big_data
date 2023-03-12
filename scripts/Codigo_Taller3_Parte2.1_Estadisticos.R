@@ -52,7 +52,18 @@ test_final$piscina <-  as.factor(test_final$piscina)
 test_final$terraza <- as.factor(test_final$terraza)
 test_final$campestre <- as.factor(test_final$campestre) 
 
+# Bases descriptivas 
 
+Base_descriptivas <- train[c("mujer","edad", "amo_casa", "hijos_hogar",
+                             "estudiante", "primaria", 
+                             "secundaria", "media", "superior", 
+                             "Ingtotug", "numero_personas", 
+                             "exp_trab_actual", "horas_trab_usual", 
+                             "num_menores", "Pobre")]
 
+estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x) 
+  c(mean = mean(x), sd = sd(x))))
+
+write.xlsx(estadisticas_todos, file = "Estadisticos_todos.xlsx")
 
 

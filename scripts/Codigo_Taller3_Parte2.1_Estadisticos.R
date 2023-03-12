@@ -54,12 +54,14 @@ test_final$campestre <- as.factor(test_final$campestre)
 
 # Bases descriptivas 
 
-Base_descriptivas <- train[c("mujer","edad", "amo_casa", "hijos_hogar",
-                             "estudiante", "primaria", 
-                             "secundaria", "media", "superior", 
-                             "Ingtotug", "numero_personas", 
-                             "exp_trab_actual", "horas_trab_usual", 
-                             "num_menores", "Pobre")]
+Base_descriptivas <- train_final[c("price","bedrooms", "property_type", "garaje",
+                             "piscina", "terraza", 
+                             "campestre","dist_min_train_parque", 
+                             "dist_min_train_fitness", "dist_min_train_fitnesse",
+                             "dist_min_train_playground", "dist_hospital_centre_train",
+                             "dist_clinic_centre_train", "dist_police_centre_train",
+                             "dist_school_centre_train", "dist_restaurante_centre_train",
+                             "dist_cinema_centre_train")]
 
 estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x) 
   c(mean = mean(x), sd = sd(x))))

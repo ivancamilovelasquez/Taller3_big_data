@@ -18,7 +18,7 @@ rm(list = ls())
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(readr, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
+p_load(readr,openxlsx, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
 
 # - Importar base
 
@@ -46,17 +46,19 @@ train_final$garaje <- as.numeric(train_final$garaje)
 train_final$piscina <-  as.numeric(train_final$piscina)
 train_final$terraza <- as.numeric(train_final$terraza)
 train_final$campestre <- as.numeric(train_final$campestre) 
-train_final$property_type <- as.numeric(train_final$property_type) 
+
 
 test_final$garaje <- as.numeric(test_final$garaje)
 test_final$piscina <-  as.numeric(test_final$piscina)
 test_final$terraza <- as.numeric(test_final$terraza)
 test_final$campestre <- as.numeric(test_final$campestre) 
-test_final$property_type <- as.numeric(test_final$property_type) 
+
 
 # Bases descriptivas 
 
-Base_descriptivas <- train_final[c("price","bedrooms", "property_type", "garaje",
+# Train 
+
+Base_descriptivas <- train_final[c("price","bedrooms", "apto_total", "garaje",
                              "piscina", "terraza", 
                              "campestre","dist_min_train_parque", 
                              "dist_min_train_fitness", "dist_min_train_fitnesse",
@@ -68,6 +70,6 @@ Base_descriptivas <- train_final[c("price","bedrooms", "property_type", "garaje"
 estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x) 
   c(mean = mean(x), sd = sd(x))))
 
-write.xlsx(estadisticas_todos, file = "Estadisticos_todos.xlsx")
+write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/Estadisticos_todos.xlsx")
 
 

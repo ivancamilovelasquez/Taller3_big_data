@@ -186,7 +186,30 @@ MAE(y_pred = y_hat_outsample5, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample5, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample5, y_true = t_test$price)
 
+#Modelo 6: Regresión Lasso ----
 
+lambda_grid <- 10^seq(-4, 0.01, length = 200) 
+
+mod6 <- train(price ~ bedrooms + as.factor(casa) + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+                dist_cinema_centre_train + dist_pub_centre_train + as.factor(year), 
+              data = t_train, 
+              method = "glmnet",
+              trControl = cv2,
+              metric = "RMSE",
+              tuneGrid = expand.grid(alpha = 1,lambda=lambda_grid), 
+              preProcess = c("center", "scale")
+)
+
+mod6
+
+## Métricas modelo 6
+y_hat_outsample6 = predict(mod6, newdata = t_test)
+
+MAE(y_pred = y_hat_outsample6, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample6, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample6, y_true = t_test$price)
 
 
 #Modelo 9: Bagging ----

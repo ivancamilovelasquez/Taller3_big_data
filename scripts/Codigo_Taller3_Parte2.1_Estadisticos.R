@@ -42,15 +42,17 @@ colnames(test_final)[39] <- "dist_school_centre_train"
 colnames(test_final)[40] <- "dist_cinema_centre_train"
 colnames(test_final)[41] <- "dist_restaurante_centre_train"
 
-train_final$garaje <- as.factor(train_final$garaje)
-train_final$piscina <-  as.factor(train_final$piscina)
-train_final$terraza <- as.factor(train_final$terraza)
-train_final$campestre <- as.factor(train_final$campestre) 
+train_final$garaje <- as.numeric(train_final$garaje)
+train_final$piscina <-  as.numeric(train_final$piscina)
+train_final$terraza <- as.numeric(train_final$terraza)
+train_final$campestre <- as.numeric(train_final$campestre) 
+train_final$property_type <- as.numeric(train_final$property_type) 
 
-test_final$garaje <- as.factor(test_final$garaje)
-test_final$piscina <-  as.factor(test_final$piscina)
-test_final$terraza <- as.factor(test_final$terraza)
-test_final$campestre <- as.factor(test_final$campestre) 
+test_final$garaje <- as.numeric(test_final$garaje)
+test_final$piscina <-  as.numeric(test_final$piscina)
+test_final$terraza <- as.numeric(test_final$terraza)
+test_final$campestre <- as.numeric(test_final$campestre) 
+test_final$property_type <- as.numeric(test_final$property_type) 
 
 # Bases descriptivas 
 

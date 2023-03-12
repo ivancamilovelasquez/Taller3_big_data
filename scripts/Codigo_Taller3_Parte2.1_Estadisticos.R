@@ -26,7 +26,8 @@ test_final <- read_csv("C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/test_
 
 train_final <- read_csv("C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/train_final.csv")
 
-#Cambiar nombre de columnas ----
+#Cambiar nombre de columnas 
+
 colnames(test_final)[28] <- "dist_min_train_parque"
 colnames(test_final)[29] <- "dist_min_train_fitness"
 colnames(test_final)[30] <- "dist_min_train_fitnesse"
@@ -50,3 +51,8 @@ test_final$garaje <- as.factor(test_final$garaje)
 test_final$piscina <-  as.factor(test_final$piscina)
 test_final$terraza <- as.factor(test_final$terraza)
 test_final$campestre <- as.factor(test_final$campestre) 
+
+
+
+
+

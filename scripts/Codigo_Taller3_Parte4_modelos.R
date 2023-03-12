@@ -74,6 +74,7 @@ filtro2 <- is.na(t_train$surface_total)
 sum(filtro2)
 
 # Hay muchos datos faltantes de estas variables claves
+
 # Grafico de distribucion de las areas de las propiedades 
 
 p <- ggplot(train_final, aes(x = area_maxima)) +
@@ -83,6 +84,7 @@ p <- ggplot(train_final, aes(x = area_maxima)) +
   theme_bw()
 
 ggplotly(p)
+
 # Modelos sin Escalar los datos
 p_load(MLmetrics)
 
@@ -183,6 +185,48 @@ y_hat_outsample5 = predict(mod5, newdata = t_test)
 MAE(y_pred = y_hat_outsample5, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample5, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample5, y_true = t_test$price)
+
+
+
+
+#Modelo 9: Bagging ----
+p_load(ipred)
+mod9 <- bagging(price ~ bedrooms + casa + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                  dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                  campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+                  dist_cinema_centre_train + dist_pub_centre_train + year,
+                data  = t_train, nbagg = 500)
+
+mod9
+
+## Métricas modelo 9
+y_hat_outsample9 <- predict(mod9,newdata = t_test)
+
+MAE(y_pred = y_hat_outsample9, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample9, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample9, y_true = t_test$price)
+
+#Modelo 10: Elastic Net ----
+mod10 <-train(price ~ bedrooms + casa + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+            dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+            campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+            dist_cinema_centre_train + dist_pub_centre_train + year,
+          data=t_train,
+          method = 'glmnet', 
+          trControl = cv2,
+          tuneGrid = expand.grid(alpha = seq(0,1,by = 0.1), #grilla de alpha
+                                 lambda = seq(0.001,0.02,by = 0.001)),
+          preProcess = c("center", "scale")
+) 
+
+mod10
+
+## Métricas modelo 10
+y_hat_outsample10 <- predict(mod10,newdata = t_test)
+
+MAE(y_pred = y_hat_outsample10, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample10, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample10, y_true = t_test$price)
 
 # Modelos con Datos Escalados ----
 # Eslacar los datos

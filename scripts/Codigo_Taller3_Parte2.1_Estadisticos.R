@@ -22,11 +22,9 @@ p_load(readr, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargaz
 
 # - Importar base
 
-library(readr)
 test_final <- read_csv("C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/test_final.csv")
 
-test_final
-train_final
+train_final <- read_csv("C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/train_final.csv")
 
 #Cambiar nombre de columnas ----
 colnames(test_final)[28] <- "dist_min_train_parque"

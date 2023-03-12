@@ -89,3 +89,7 @@ estadisticas_todos <- data.frame(sapply(Base_descriptivas, function(x)
 
 write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Problem Set 3/Estadisticos_todos_test.xlsx")
 
+
+# Gráfico
+
+

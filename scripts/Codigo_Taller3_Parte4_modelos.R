@@ -236,6 +236,33 @@ MAE(y_pred = y_hat_outsample7, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample7, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample7, y_true = t_test$price)
 
+
+#Modelo 8: Random Forest & Expansion grid ----
+
+tunegrid_rf2 <- expand.grid(mtry = 8)
+
+mod8 <- train(price ~ bedrooms + as.factor(casa) + dist_min_train_parque + dist_min_train_fitness + area_parque + 
+                dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
+                campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
+                dist_cinema_centre_train + dist_pub_centre_train + as.factor(year),
+              data = t_train,
+              method = "rf", 
+              trControl = cv2,
+              tuneGrid = tunegrid_rf2,
+              metric = 'RMSE',
+              ntree = 200
+)
+
+mod8
+
+## Métricas modelo 8
+y_hat_outsample8 = predict(mod8, newdata = t_test)
+
+MAE(y_pred = y_hat_outsample8, y_true = t_test$price)
+MAPE(y_pred = y_hat_outsample8, y_true = t_test$price)
+RMSE(y_pred = y_hat_outsample8, y_true = t_test$price)
+
+
 #Modelo 9: Bagging ----
 p_load(ipred)
 mod9 <- bagging(price ~ bedrooms + casa + dist_min_train_parque + dist_min_train_fitness + area_parque + 

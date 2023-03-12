@@ -20,8 +20,8 @@ rm(list = ls())
 library(pacman)
 p_load(tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly)
 
-test_final <- read.csv("~/MAESTRIA/Taller 3 Big Data/test_final.csv")
-train_final <- read.csv("~/MAESTRIA/Taller 3 Big Data/train_final.csv")
+test_final
+train_final
 
 #Cambiar nombre de columnas ----
 colnames(test_final)[28] <- "dist_min_train_parque"
@@ -48,7 +48,7 @@ test_final$piscina <-  as.factor(test_final$piscina)
 test_final$terraza <- as.factor(test_final$terraza)
 test_final$campestre <- as.factor(test_final$campestre) 
 
-# Ver cuantos datso faltantes hay en la variable de superficie 
+# Ver cuantos datos faltantes hay en la variable de superficie 
 filtro <- is.na(train_final$surface_covered)
 sum(filtro)
 filtro2 <- is.na(train_final$surface_total)
@@ -83,32 +83,7 @@ p <- ggplot(train_final, aes(x = area_maxima)) +
   theme_bw()
 
 ggplotly(p)
-
-# Eslacar los datos----
-variables_numericas <- c("dist_min_train_parque", "dist_min_train_fitness", "area_parque", 
-                         "dist_hospital_centre_train","dist_busstation_centre_train", "dist_police_centre_train", 
-                         "dist_school_centre_train", "dist_restaurante_centre_train")
-
-escalador <- preProcess(train_final[, variables_numericas],
-                        method = c("center", "scale"))
-
-train_final[, variables_numericas] <- predict(escalador, train_final[, variables_numericas])
-test_final[, variables_numericas] <- predict(escalador, test_final[, variables_numericas])
-
-
-escalador1 <- preProcess(t_train[, variables_numericas],
-                        method = c("center", "scale"))
-
-t_train[, variables_numericas] <- predict(escalador, t_train[, variables_numericas])
-t_test[, variables_numericas] <- predict(escalador, t_test[, variables_numericas])
-
-
-# train_final$a <- ifelse(train_final$surface_covered != 0, 1, 0)
-# 
-# prop.table(table(train_final$a, exclude = NULL))
-# 
-# train_final <- train_final[,-41]
-
+# Modelos sin Escalar los datos
 p_load(MLmetrics)
 
 #Modelo 1: Regresión lineal ----
@@ -208,6 +183,36 @@ y_hat_outsample5 = predict(mod5, newdata = t_test)
 MAE(y_pred = y_hat_outsample5, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample5, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample5, y_true = t_test$price)
+
+# Modelos con Datos Escalados ----
+# Eslacar los datos
+variables_numericas <- c("dist_min_train_parque", "dist_min_train_fitness", "area_parque", 
+                         "dist_hospital_centre_train","dist_busstation_centre_train", "dist_police_centre_train", 
+                         "dist_school_centre_train", "dist_restaurante_centre_train")
+
+escalador <- preProcess(train_final[, variables_numericas],
+                        method = c("center", "scale"))
+
+train_final[, variables_numericas] <- predict(escalador, train_final[, variables_numericas])
+test_final[, variables_numericas] <- predict(escalador, test_final[, variables_numericas])
+
+
+escalador1 <- preProcess(t_train[, variables_numericas],
+                        method = c("center", "scale"))
+
+t_train[, variables_numericas] <- predict(escalador, t_train[, variables_numericas])
+t_test[, variables_numericas] <- predict(escalador, t_test[, variables_numericas])
+
+set.seed(1234)
+
+inTrain <- createDataPartition(
+  y = train_final$price,## La variable dependiente u objetivo 
+  p = .7, ## Usamos 70%  de los datos en el conjunto de entrenamiento 
+  list = FALSE)
+
+
+t_train <- train_final[ inTrain,]
+t_test  <- train_final[-inTrain,]
 
 
 

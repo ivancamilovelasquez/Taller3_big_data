@@ -18,7 +18,7 @@ rm(list = ls())
 # - Librerias y paquetes 
 
 library(pacman)
-p_load(readr,openxlsx, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly, ggplot2)
+p_load(readr,openxlsx, tidyverse, rstudioapi, rio, leaflet, rgeos, tmaptools, sf, stargazer,osmdata, plotly, ggplot2, rvest, tidyverse, ggplot2, robotstxt, psych, stargazer, boot, openxlsx, rio, GGally)
 
 # - Importar base
 
@@ -92,13 +92,13 @@ write.xlsx(estadisticas_todos, file = "C:/Users/jorge/Desktop/BIG DATA & ML/Prob
 
 # Gráfico
 
-df <- train[c("mujer","edad", 
-              "Ingtotug", "numero_personas", 
-              "exp_trab_actual", "horas_trab_usual", 
-              "num_menores", "Pobre")]
-df$Pobre <- factor(df$Pobre, labels = c("No pobre", "Pobre"))
+df <- train_final[c("price","bedrooms","dist_min_train_parque", 
+                    "dist_min_train_fitness", "dist_hospital_centre_train",
+                     "dist_police_centre_train",
+                    "dist_school_centre_train", "apto_total")]
+df$apto_total <- factor(df$apto_total, labels = c("Casa", "Apto"))
 
-g <- ggpairs(df, columns = 2:6, ggplot2::aes(colour = Pobre)) +
+g <- ggpairs(df, columns = 1:6, ggplot2::aes(colour = apto_total)) +
   theme_minimal() + 
   labs(title = "Gráfico de matriz de dispersión") + 
   scale_y_continuous(labels = scales::number_format()) + 

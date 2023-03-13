@@ -68,6 +68,25 @@ inTrain <- createDataPartition(
 t_train <- train_final[ inTrain,]
 t_test  <- train_final[-inTrain,]
 
+# Eslacar los datos ----
+variables_numericas <- c("dist_min_train_parque", "dist_min_train_fitness", "area_parque", 
+                         "dist_hospital_centre_train","dist_busstation_centre_train", "dist_police_centre_train", 
+                         "dist_school_centre_train", "dist_restaurante_centre_train")
+
+escalador <- preProcess(train_final[, variables_numericas],
+                        method = c("center", "scale"))
+
+train_final[, variables_numericas] <- predict(escalador, train_final[, variables_numericas])
+test_final[, variables_numericas] <- predict(escalador, test_final[, variables_numericas])
+
+
+escalador1 <- preProcess(t_train[, variables_numericas],
+                        method = c("center", "scale"))
+
+t_train[, variables_numericas] <- predict(escalador, t_train[, variables_numericas])
+t_test[, variables_numericas] <- predict(escalador, t_test[, variables_numericas])
+
+
 filtro <- is.na(t_train$surface_covered)
 sum(filtro)
 filtro2 <- is.na(t_train$surface_total)
@@ -85,7 +104,6 @@ p <- ggplot(train_final, aes(x = area_maxima)) +
 
 ggplotly(p)
 
-# Modelos sin Escalar los datos
 p_load(MLmetrics)
 
 #Modelo 1: Regresión lineal ----
@@ -145,7 +163,7 @@ MAE(y_pred = y_hat_outsample3, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample3, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample3, y_true = t_test$price)
 
-#Modelo 4: Ramdon Forest
+#Modelo 4: Ramdon Forest ----
 cv <- trainControl(method = "cv",number = 10,search = "grid")
 tunegrid_rf <- expand.grid(mtry = 5, 
                            min.node.size = 10,
@@ -168,7 +186,7 @@ MAE(y_pred = y_hat_outsample4, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample4, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample4, y_true = t_test$price)
 
-#Modelo 5: Ramdon Forest (adicionando otro control)
+#Modelo 5: Ramdon Forest (adicionando otro control) ----
 mod5 <- train(price ~ bedrooms + as.factor(casa)  + as.factor(year) + dist_min_train_parque + dist_min_train_fitness + area_parque + 
                 dist_hospital_centre_train + dist_busstation_centre_train + dist_police_centre_train + garaje +
                 campestre + piscina + terraza + dist_school_centre_train + dist_restaurante_centre_train +
@@ -302,46 +320,38 @@ MAE(y_pred = y_hat_outsample10, y_true = t_test$price)
 MAPE(y_pred = y_hat_outsample10, y_true = t_test$price)
 RMSE(y_pred = y_hat_outsample10, y_true = t_test$price)
 
-# Modelos con Datos Escalados ----
-# Eslacar los datos
-variables_numericas <- c("dist_min_train_parque", "dist_min_train_fitness", "area_parque", 
-                         "dist_hospital_centre_train","dist_busstation_centre_train", "dist_police_centre_train", 
-                         "dist_school_centre_train", "dist_restaurante_centre_train")
+# Modelo 11: Superlearner ----
+p_load(SuperLearner)
+y <- t_train$price
+X <- t_train  %>% select(bedrooms , casa , dist_min_train_parque , dist_min_train_fitness , area_parque , 
+                         dist_hospital_centre_train , dist_busstation_centre_train , dist_police_centre_train , garaje ,
+                         campestre , piscina , terraza , dist_school_centre_train , dist_restaurante_centre_train ,
+                         dist_cinema_centre_train , dist_pub_centre_train , year)  %>% st_drop_geometry()
 
-escalador <- preProcess(train_final[, variables_numericas],
-                        method = c("center", "scale"))
+index <- split(1:nrow(t_train), t_train$property_type)
 
-train_final[, variables_numericas] <- predict(escalador, train_final[, variables_numericas])
-test_final[, variables_numericas] <- predict(escalador, test_final[, variables_numericas])
+folds<-length(index)
 
+sl.lib <- c("SL.caret.rpart","SL.ranger")
 
-escalador1 <- preProcess(t_train[, variables_numericas],
-                        method = c("center", "scale"))
+mod11 <- SuperLearner(Y = y, X = data.frame(X),
+                           method = "method.NNLS", SL.library = sl.lib,
+                           cvControl = list(V = folds, validRows = index))
+mod11
 
-t_train[, variables_numericas] <- predict(escalador, t_train[, variables_numericas])
-t_test[, variables_numericas] <- predict(escalador, t_test[, variables_numericas])
+test <- t_test  %>%  mutate(yhat_Sup=predict(mod11, newdata = data.frame(t_test), onlySL = T)$pred)
 
-set.seed(1234)
-
-inTrain <- createDataPartition(
-  y = train_final$price,## La variable dependiente u objetivo 
-  p = .7, ## Usamos 70%  de los datos en el conjunto de entrenamiento 
-  list = FALSE)
+with(test,mean(abs(price-yhat_Sup)))
 
 
-t_train <- train_final[ inTrain,]
-t_test  <- train_final[-inTrain,]
+# El mejor modelo es ... Modelo 8: Random Forest & Expansion grid
 
-
-
-# El mejor modelo es ...
-
-modelo_final = mod4
+modelo_final = mod8
 y_predict <- predict(modelo_final, newdata = test_final)
 
-predictmod1 <- data.frame(
+mejormodelo <- data.frame(
   property_id = test_final$property_id,
   price = y_predict     
 )
-predictmod1
-write.csv(predictmod1, "~/MAESTRIA/Taller 3 Big Data/predictmod1.csv", row.names =  FALSE)
+mejormodelo
+write.csv(mejormodelo, "~/MAESTRIA/Taller 3 Big Data/mejormodelo.csv", row.names =  FALSE)
